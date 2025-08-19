@@ -28,25 +28,22 @@ jobs:
         cd macos
         sed -i 's/VERSION: "13"/VERSION: "14"/' compose.yml
 
+    - name: Install Zrok
+      run: curl -sSf https://get.openziti.io/install.bash | sudo bash -s zrok
+    
+    - name: Setup Zrok environment
+      run: sudo zrok enable ${{ secrets.ZROK_ENV_TOKEN }}
+    
+    - name: Share public port
+      run: sudo zrok share public localhost:8006 &
+    
+    - name: Share private port
+      run: sudo zrok share private --backend-mode tcpTunnel localhost:5900 &
+  
     - name: Start Docker containers
       run: |
         cd macos
         sudo docker-compose -f compose.yml up
-
-    - name: Wait for services to start
-      run: sleep 30
-
-    - name: Install Zrok
-      run: curl -sSf https://get.openziti.io/install.bash | sudo bash -s zrok
-
-    - name: Setup Zrok environment
-      run: sudo zrok enable ${{ secrets.ZROK_ENV_TOKEN }}
-
-    - name: Share public port
-      run: sudo zrok share public localhost:8006 &
-
-    - name: Share private port
-      run: sudo zrok share private --backend-mode tcpTunnel localhost:5900 &
 
     - name: Wait for 6 hours
       run: sleep 21600
