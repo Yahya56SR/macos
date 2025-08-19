@@ -32,13 +32,13 @@ jobs:
       run: curl -sSf https://get.openziti.io/install.bash | sudo bash -s zrok
     
     - name: Setup Zrok environment
-      run: sudo zrok enable ${{ secrets.ZROK_ENV_TOKEN }}
+      run: sudo zrok enable ${{ secrets.ZROK_ENV_TOKEN }} --headless
     
     - name: Share public port
-      run: sudo zrok share public localhost:8006 &
+      run: sudo zrok share public localhost:8006 --headless &
     
     - name: Share private port
-      run: sudo zrok share private --backend-mode tcpTunnel localhost:5900 &
+      run: sudo zrok share private --backend-mode tcpTunnel localhost:5900 --headless &
   
     - name: Start Docker containers
       run: |
